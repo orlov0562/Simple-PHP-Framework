@@ -15,7 +15,15 @@
         public function __construct($conf) {
             $this->loadConf($conf);
             Config::setConfigDir($conf['appDir'].'/Configs/');
-            $this->services = $this->getConfig('services');
+            $this->services = $this->getConfigFile('services');
+
+            $routes = include $this->conf['appDir'].'/Routes/routes.php';
+            $validators = include $this->conf['appDir'].'/Routes/validators.php';
+            $middleware = include $this->conf['appDir'].'/Routes/middleware.php';
+            $this->router = new Router($routes, $validators, $middleware);
+
+            $this->response = new Response;
+
         }
 
         protected function loadConf($conf)
@@ -29,17 +37,19 @@
 
         public function run()
         {
-            $routes = include $this->conf['appDir'].'/Routes/routes.php';
-            $validators = include $this->conf['appDir'].'/Routes/validators.php';
-            $middleware = include $this->conf['appDir'].'/Routes/middleware.php';
-            $this->router = new Router($routes, $validators, $middleware);
             $this->router->resolve();
         }
 
-        public function getConfig($confPath)
+        public function getConfigFile($confPath)
         {
             return Config::get($confPath);
         }
+
+        public function getConfig()
+        {
+            return $this->conf;
+        }
+
 
         public function getService($serviceName, array $constructParams=[])
         {
@@ -64,8 +74,12 @@
             return $this->helpers[$helperName];
         }
 
-        public function getCurrentRoute(){
-            return $this->router->getCurrentRoute();
+        public function getRouter(){
+            return $this->router;
+        }
+
+        public function getResponse(){
+            return $this->response;
         }
 /*
         public function getRequest($type='all')

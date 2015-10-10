@@ -7,34 +7,34 @@ return [
         'routes' => [
             'home' => [
                 'route' => '/',
-                'resolver' => ['Index', 'Index'],
+                'resolver' => ['App\Controllers\Frontend\IndexController', 'IndexAction'],
             ],
 
             'test' => [
                 'route' => '/test',
-                'middleware' => [['ip', ['127.0.0.1']]],
-                'resolver' => function(){ echo 'test'; },
+                'middleware' => [['ip', [['128.0.0.1', '129.0.0.1']]]],
+                'resolver' => function(){ echo 'Frontend test hello world'; },
             ],
 
             'login' => [
                 'route' => '/login',
                 'middleware' => [['autologin']],
-                'resolver' => ['Login', 'Index'],
+                'resolver' => ['App\Controllers\Frontend\LoginController', 'IndexAction'],
             ],
 
             '*' => [
-                'resolver' => ['Errors', 'NotFound'],
+                'resolver' => ['App\Controllers\Frontend\ErrorsController', 'NotFoundAction'],
             ]
         ],
     ],
 
     'backend' => [
         'baseRoute' => '/admin',
-        'middleware' => [['autologin'], ['role', ['admin']]],
+        'middleware' => [['autologin'], ['role', ['admin']], ['test',['from-group-1', 'from-group-2']]],
         'routes' => [
             'home' => [
                 'route' => '/',
-                'resolver' => ['App\Controllers\Admin\IndexController', 'IndexAction'],
+                'resolver' => ['App\Controllers\Backend\IndexController', 'IndexAction'],
                 'path' => ['admin'],
             ],
 
@@ -47,7 +47,7 @@ return [
                     ],
                 ],
                 'default' => ['page'=>1],
-                'resolver' => ['App\Controllers\Admin\PostController', 'ListAction'],
+                'resolver' => ['App\Controllers\Backend\PostController', 'ListAction'],
                 'path' => ['admin', 'posts'],
             ],
 
@@ -59,12 +59,18 @@ return [
                         ['unsigned'],
                     ]
                 ],
-                'resolver' => ['App\Controllers\Admin\PostController', 'EditAction'],
+                'resolver' => ['App\Controllers\Backend\PostController', 'EditAction'],
                 'path' => ['admin', 'posts', 'edit'],
             ],
 
+            'test' => [
+                'route' => '/test',
+                'middleware' => [['test',['from-route-1', 'from-route-2']]],
+                'resolver' => function() {die('Backend test hello world');},
+            ],
+
             '*' => [
-                'resolver' => ['Errors', 'NotFound'],
+                'resolver' => ['App\Controllers\Backend\ErrorsController', 'NotFoundAction'],
             ],
         ],
     ],

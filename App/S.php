@@ -5,12 +5,12 @@ namespace App;
 class S {
     private static $framework = null;
 
-    protected function framework()
+    protected static function framework()
     {
-        if (is_null($this->framework)) {
+        if (is_null(self::$framework)) {
             throw new \Exception('Framework not initialized');
         }
-        return $this->framework;
+        return self::$framework;
     }
 
     public static function run(array $configuration)
@@ -21,18 +21,34 @@ class S {
 
     public static function service($serviceName)
     {
-        return $this->framework()->getService($serviceName);
+        return self::framework()->getService($serviceName);
     }
 
     public static function model($modelName, array $constructParams=[])
     {
-        return $this->framework()->getModel($modelName, $constructParams);
+        return self::framework()->getModel($modelName, $constructParams);
     }
 
     public static function helper($helperName)
     {
-        return $this->framework()->getHelper($helperName);
+        return self::framework()->getHelper($helperName);
     }
 
+    public static function router(){
+            return self::framework()->getRouter();
+    }
+
+    public static function conf(){
+            return self::framework()->getConfig();
+    }
+
+
+    public static function currentRoute(){
+            return self::framework()->getRouter()->getCurrentRoute();
+    }
+
+    public static function response(){
+            return self::framework()->getResponse();
+    }
 }
 
