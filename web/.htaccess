@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteBase /framework/web/
+RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png|css|js)$
+RewriteRule ^(.*)$ index.php?r=$1 [L,QSA]
